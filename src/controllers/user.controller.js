@@ -10,9 +10,9 @@ const registerUser = asynHandler(async (req,res) => {
     //get the user detail from the rquest.body || front end
 
     const { username,email,fullname,password } = req.body
-    console.log("_________req.body__________________________");
-    console.log(req.body);
-    console.log("___________________________________");
+    // console.log("_________req.body__________________________");
+    // console.log(req.body);
+    // console.log("___________________________________");
 
     //validate the user detail
     if(
@@ -24,18 +24,26 @@ const registerUser = asynHandler(async (req,res) => {
     // check if the user is already exist  or not
 
     const existingUser = await User.findOne({email:email})
-    console.log(existingUser);
+    // console.log(existingUser);
     // User.findOne({$or:[{username,email}]})
 
     if(existingUser){
         throw new ApiError(400,"User already exist")
     }
+    
 
-    console.log("running till  here");
+ 
     // upload the file
     const avatarLocalPath=req.files?.avatar[0]?.path
-    console.log(avatarLocalPath);
-    const coverImageLocalPath=req.files?.coverImage[0]?.path
+    // console.log(avatarLocalPath);
+    // let coverImageLocalPath;
+    // if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length>0){
+    //     coverImageLocalPath=req.files.coverImage[0].path
+    // }
+
+    let coverImageLocalPath = req.files?.coverImage?.[0]?.path || null;
+
+    
 
     if(!avatarLocalPath){
         throw new ApiError(400,"Avatar is required")
@@ -43,13 +51,14 @@ const registerUser = asynHandler(async (req,res) => {
     
     //upload on cloud
     const avatar=await uploadOnCloudinary(avatarLocalPath);
-    console.log("avatar ffrom clodanary " ,avatar);
-    if(coverImageLocalPath) await uploadOnCloudinary(coverImageLocalPath);
+    // console.log("avatar ffrom clodanary " ,avatar);
+    const coverImage= await uploadOnCloudinary(coverImageLocalPath);
     
-
     if(!avatar){
         throw new ApiError(500,"Error uploading to cloudinary")
     }
+
+    
 
     const user= await User.create({
         username:username.toLowerCase(),
@@ -57,12 +66,12 @@ const registerUser = asynHandler(async (req,res) => {
         fullname,
         password,
         avatar: avatar.url,
-        coverImage: coverImage?.url || null
+        coverImage: coverImage?.url || ""
     })
 
     // this is to remove the password from the response and refresh token
     const created_user=await User.findById(user._id).select("-password -refreshToken")
-
+    
     if(!created_user){
         throw new ApiError(500,"something went wrong while registering user")
     }
