@@ -38,8 +38,12 @@ router.route("/updatecoverimage").patch(jwtVerify,
 router.route("/updateprofile").patch(jwtVerify,changeProfielInfo)
 router.route("/changepassword").post(jwtVerify,changeUserPassword)
 router.route("/profile").get(jwtVerify,currentUser)
-router.route("channelinfo/:username").get(jwtVerify,getChannelProfile)
-router.route("watchhistory").get(jwtVerify,getUserWatchHistory)
+router.route("/channelinfo/:username").get(jwtVerify,getChannelProfile)
+router.route("/watchhistory").get(jwtVerify,getUserWatchHistory)
+
+
+
+
 export default router
 
 

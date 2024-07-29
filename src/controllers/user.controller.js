@@ -324,13 +324,14 @@ const changeUserCoverImage = asynHandler(async (req, res) => {
 
 const getChannelProfile= asynHandler(async (req ,res ) =>{
     const {username}=req.params
+    console.log(username);
     if(!username?.trim()){
         throw new ApiError(400,"username is required")
     }
 
     const channelProfile=await User.aggregate([
         {
-            $match:{username:username?.tpLowerCase()}
+            $match:{username:username?.toLowerCase()}
         },
         {
             $lookup:{
@@ -433,6 +434,8 @@ const getUserWatchHistory = asynHandler(async(req ,res) => {
     res.status(200).
     json(new ApiError(200,watchHistory[0].watchHistory,"watchHistory"))
 })
+
+
 
 export { 
     registerUser,
