@@ -25,7 +25,7 @@ const addPlaylist  = asynHandler(async (req, res) => {
 const deletePlaylist = asynHandler(async (req, res) => {
     const {playlistId} =req.params
     const playlist = await Playlist.findOne({ _id: playlistId, owner: req.user._id });
-    if (!playlist) {
+    if (!playlist) { 
         throw new ApiError(404, "Playlist not found or you do not have permission to delete this playlist");
     }
     await Playlist.findByIdAndDelete(playlistId);

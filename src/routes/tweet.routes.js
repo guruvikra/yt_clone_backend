@@ -10,13 +10,10 @@ import {
 
 
 const router=Router()
-
 router.use(jwtVerify)
 
 router.route("/").get(getTweetofUser).post(createTweet)
-
 router.route("/:id").delete(deleteTweet).patch(updateTweet)
-
 router.route("/user/:userId").get(getUserTweets)
 
 
