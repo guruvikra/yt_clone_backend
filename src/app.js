@@ -26,6 +26,6 @@ app.use("/api/video",videoRouter)
 app.use("/api/video/subscription",subscriptionRouter)
 app.use("/api/tweet",tweetRouter)
 app.use("/api/playlist",playlistRouter)
-app.use("api/comments",commentRouter)
-app.use("api/like/toggle",likeRouter)
+app.use("/api/comments",commentRouter)
+app.use("/api/like",likeRouter)
 export { app }
