@@ -74,7 +74,14 @@ const togglePublishStatus= asynHandler(async (req, res ) => {
 const getVideoById=asynHandler(async (req, res) => {
     const {id} =req.params
     const video=await Video.findById(id);
-    console.log(video);
+    // console.log(video.Owner===req.user._id);
+    // console.log(video.Owner)
+    // console.log(req.user._id);
+    if(!video.Owner.equals(req.user._id)){
+        video.views++;
+        await video.save({validateBeforeSave: false});
+    }
+    // console.log(video);
     if(!video){
         throw new ApiError(404,"video not found")
     }

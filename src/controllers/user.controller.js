@@ -7,9 +7,6 @@ import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
 
 
-
-
-
 const generateAccessTokenAndRefreshToken =async (userId) => {
     const user = await User.findById(userId);
     // console.log(user);
@@ -48,7 +45,6 @@ const registerUser = asynHandler(async (req,res) => {
     }
     
 
- 
     // upload the file
     const avatarLocalPath=req.files?.avatar[0]?.path
     // console.log(avatarLocalPath);

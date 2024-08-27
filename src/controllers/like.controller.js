@@ -72,8 +72,45 @@ const toggleVideoLike = asynHandler(async (req, res) => {
 
 
 const getAllLikedVideos=asynHandler(async(req, res) => {
-    const LikedVideos=await Like.find({likedBy:req.user._id,video:{$exists:true}}).populate('video')
-    console.log(LikedVideos);
+    // const LikedVideos=await Like.find({likedBy:req.user._id,video:{$exists:true}}).populate('video')
+    // console.log(LikedVideos);
+
+    const LikedVideos=await Like.aggregate([
+        {
+            $match:{
+                likedBy:req.user._id,
+                video:{$exists:true}
+                }
+        },
+        {
+            $lookup:{
+                from :"videos",
+                foreignField:"_id",
+                localField:"video",
+                as:"videoss",
+                pipeline:[
+                    {
+                        $project:{
+                            videoFile:1,
+                            title:1,
+                            description:1,
+                            duration:1,
+                            createdAt:1,
+                            isPublished:1
+                           
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $project:{
+                videoss:1,
+            }
+        }
+
+
+    ])
     if(LikedVideos.length<0){
         throw new ApiError(404,"No video liked by this user")
     }
